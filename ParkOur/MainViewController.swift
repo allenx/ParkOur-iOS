@@ -50,6 +50,27 @@ class MainViewController: UIViewController {
         
         assistkitIndicator.addSubview(label)
         
+        let pullUpView = PullUpView()
+        print(pullUpView.frame)
+        view.addSubview(pullUpView)
+        
+        
+        let suggestionCard = ControlCardView(title: "Parking Suggestions")
+        suggestionCard.setHeightAccordingToContent()
+
+        let appCard = ControlCardView(title: "ParkOur App")
+        appCard.setHeightAccordingToContent()
+        
+        appCard.y += suggestionCard.height + 12
+        
+        let assistKitCard = ControlCardView(title: "ParkOur AssistKit")
+        assistKitCard.setHeightAccordingToContent()
+        assistKitCard.y += suggestionCard.height + 12 + appCard.height + 12
+        
+        pullUpView.addSubview(suggestionCard)
+        pullUpView.addSubview(appCard)
+        pullUpView.addSubview(assistKitCard)
+        
         
         // Do any additional setup after loading the view.
     }

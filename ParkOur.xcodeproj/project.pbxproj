@@ -13,6 +13,8 @@
 		9F1A914C237D30F000BEE2EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F1A914B237D30F000BEE2EE /* Assets.xcassets */; };
 		9F1A914F237D30F000BEE2EE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F1A914D237D30F000BEE2EE /* LaunchScreen.storyboard */; };
 		9F1A9157237D356800BEE2EE /* ExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1A9156237D356800BEE2EE /* ExperimentView.swift */; };
+		9F7CD91E2387591B0002AD0C /* ClassExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7CD91D2387591B0002AD0C /* ClassExtensions.swift */; };
+		9F7CD92023875D030002AD0C /* PullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7CD91F23875D030002AD0C /* PullUpView.swift */; };
 		9FF9CC5B237E125E005F660C /* AssistKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF9CC5A237E125E005F660C /* AssistKitManager.swift */; };
 		9FF9CC5D237E1C77005F660C /* ControlCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF9CC5C237E1C77005F660C /* ControlCardView.swift */; };
 		9FF9CC5F237E2921005F660C /* Meta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF9CC5E237E2921005F660C /* Meta.swift */; };
@@ -29,6 +31,8 @@
 		9F1A914E237D30F000BEE2EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9F1A9150237D30F000BEE2EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9F1A9156237D356800BEE2EE /* ExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentView.swift; sourceTree = "<group>"; };
+		9F7CD91D2387591B0002AD0C /* ClassExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassExtensions.swift; sourceTree = "<group>"; };
+		9F7CD91F23875D030002AD0C /* PullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpView.swift; sourceTree = "<group>"; };
 		9FF9CC5A237E125E005F660C /* AssistKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistKitManager.swift; sourceTree = "<group>"; };
 		9FF9CC5C237E1C77005F660C /* ControlCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCardView.swift; sourceTree = "<group>"; };
 		9FF9CC5E237E2921005F660C /* Meta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meta.swift; sourceTree = "<group>"; };
@@ -75,8 +79,10 @@
 		9F1A9141237D30EF00BEE2EE /* ParkOur */ = {
 			isa = PBXGroup;
 			children = (
+				9F7CD91D2387591B0002AD0C /* ClassExtensions.swift */,
 				9F1A9142237D30EF00BEE2EE /* AppDelegate.swift */,
 				9F1A9146237D30EF00BEE2EE /* MainViewController.swift */,
+				9F7CD91F23875D030002AD0C /* PullUpView.swift */,
 				9FF9CC5C237E1C77005F660C /* ControlCardView.swift */,
 				9FF9CC5A237E125E005F660C /* AssistKitManager.swift */,
 				9FF9CC5E237E2921005F660C /* Meta.swift */,
@@ -211,8 +217,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F7CD92023875D030002AD0C /* PullUpView.swift in Sources */,
 				9F1A9147237D30EF00BEE2EE /* MainViewController.swift in Sources */,
 				9FF9CC5B237E125E005F660C /* AssistKitManager.swift in Sources */,
+				9F7CD91E2387591B0002AD0C /* ClassExtensions.swift in Sources */,
 				9FF9CC5D237E1C77005F660C /* ControlCardView.swift in Sources */,
 				9F1A9143237D30EF00BEE2EE /* AppDelegate.swift in Sources */,
 				9FF9CC5F237E2921005F660C /* Meta.swift in Sources */,
