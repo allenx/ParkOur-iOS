@@ -38,6 +38,10 @@ class PullUpView: UIView {
     }
     
     @objc func handlePan(panGesture: UIPanGestureRecognizer) {
+        
+        let velocity = panGesture.velocity(in: self)
+        print(velocity)
+        
         if panGesture.state == .began {
             panBeginLocation = panGesture.location(in: self)
         }
@@ -45,7 +49,28 @@ class PullUpView: UIView {
         let newLoc = panGesture.location(in: self)
         let deltaY = newLoc.y - panBeginLocation.y
         
-        self.y += deltaY
+        var previewY = self.y + deltaY
+        if previewY <= 126 {
+            previewY = 126
+        }
+        if previewY >= 482 {
+            previewY = 482
+        }
+        if panGesture.state == .ended {
+            if previewY >= 304 {
+                UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                    self.y = 482
+                }, completion: nil)
+            } else {
+                UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                    self.y = 126
+                }, completion: nil)
+            }
+        } else {
+            self.y = previewY
+        }
+        
+        
         
         
     }

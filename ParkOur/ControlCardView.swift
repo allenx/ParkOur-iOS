@@ -29,6 +29,7 @@ class ControlCardView: UIView {
         let titleLabel = UILabel(text: title)
         titleLabel.font = .systemFont(ofSize: 18, weight: .heavy)
         titleLabel.sizeToFit()
+        titleLabel.textColor = .black
         titleLabel.x = 20
         titleLabel.y = 14
         addSubview(titleLabel)
