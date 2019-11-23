@@ -32,13 +32,7 @@ class PairView: UIView {
         pullUpHandle.layer.cornerRadius = 2
         self.addSubview(pullUpHandle)
         
-        cancelButton = UIButton(backgroundImageName: "cancelButton", desiredSize: CGSize(width: 32, height: 32))
-
-        self.addSubview(cancelButton)
-        cancelButton.snp.makeConstraints { (make) in
-            make.right.equalTo(self).offset(-20)
-            make.top.equalTo(self).offset(20)
-        }
+        
         
         self.isUserInteractionEnabled = true
         
@@ -76,6 +70,15 @@ class PairView: UIView {
         connectButton.alpha = 0
         self.addSubview(connectButton)
         
+        cancelButton = UIButton(backgroundImageName: "cancelButton", desiredSize: CGSize(width: 32, height: 32))
+
+        self.addSubview(cancelButton)
+        cancelButton.snp.makeConstraints { (make) in
+            make.right.equalTo(self).offset(-20)
+            make.top.equalTo(self).offset(20)
+        }
+        cancelButton.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
+        
         Timer.scheduledTimer(withTimeInterval: 3.5, repeats: false) { (_) in
             self.didDiscoverAssistKit()
         }
@@ -96,6 +99,7 @@ class PairView: UIView {
                 self.foundLabel.y = 20+self.findingIndicator.height
                 self.connectButton.alpha = 1
                 self.connectButton.y = self.foundLabel.y+self.foundLabel.height+50
+                
             }) { (_) in
                 
             }
@@ -103,6 +107,14 @@ class PairView: UIView {
         }
         
         
+    }
+    
+    @objc func dismiss() {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            self.y = UIScreen.main.bounds.height
+        }) { (_) in
+            self.removeFromSuperview()
+        }
     }
     
     required init?(coder: NSCoder) {
