@@ -36,7 +36,7 @@ class AssistKitManager: NSObject {
     private let assistKitServiceUUID = CBUUID(string: "980C2C3A-089F-46FE-9177-5DE28ADBCE06")
     private let characteristicUUID = CBUUID(string: "ec0e")
     
-    static func isAlreadyPairedBefore() -> Bool {
+    static func isPaired() -> Bool {
         if UserDefaults.standard.string(forKey: Meta.pairedAssistKitKey) != nil {
             return true
         }

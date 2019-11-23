@@ -20,7 +20,7 @@ class PullUpView: UIView {
         self.y = 126
         self.layer.cornerRadius = 40
         self.width = UIScreen.main.bounds.width
-        self.height = 756
+        self.height = 900
         self.backgroundColor = UIColor(hexString: "#f3f3f3")
         self.layer.shadowColor = UIColor.black.cgColor
         self.layer.shadowRadius = 18
@@ -32,15 +32,17 @@ class PullUpView: UIView {
         pullUpHandle.layer.cornerRadius = 2
         self.addSubview(pullUpHandle)
         
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(panGesture:)))
         self.isUserInteractionEnabled = true
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(panGesture:)))
         self.addGestureRecognizer(panGesture)
+        
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(swipeGesture:)))
+        self.addGestureRecognizer(swipeGesture)
+        
     }
     
     @objc func handlePan(panGesture: UIPanGestureRecognizer) {
-        
-        let velocity = panGesture.velocity(in: self)
-        print(velocity)
+            
         
         if panGesture.state == .began {
             panBeginLocation = panGesture.location(in: self)
@@ -50,8 +52,8 @@ class PullUpView: UIView {
         let deltaY = newLoc.y - panBeginLocation.y
         
         var previewY = self.y + deltaY
-        if previewY <= 126 {
-            previewY = 126
+        if previewY <= 90 {
+            previewY = 90
         }
         if previewY >= 482 {
             previewY = 482
@@ -75,8 +77,16 @@ class PullUpView: UIView {
         
     }
     
-    @objc func swipeUp(swipeGesture: UISwipeGestureRecognizer) {
-        
+    @objc func handleSwipe(swipeGesture: UISwipeGestureRecognizer) {
+        if swipeGesture.direction == .down {
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.y = 482
+            }, completion: nil)
+        } else {
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.y = 126
+            }, completion: nil)
+        }
     }
     
     required init?(coder: NSCoder) {

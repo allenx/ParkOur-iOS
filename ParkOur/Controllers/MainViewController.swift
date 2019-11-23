@@ -16,6 +16,7 @@ class MainViewController: UIViewController {
     var dot: UIView!
     var label: UILabel!
     
+    private var pullUpView: PullUpView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +51,7 @@ class MainViewController: UIViewController {
         
         assistkitIndicator.addSubview(label)
         
-        let pullUpView = PullUpView()
+        pullUpView = PullUpView()
         print(pullUpView.frame)
         view.addSubview(pullUpView)
         
@@ -63,18 +64,32 @@ class MainViewController: UIViewController {
         
         appCard.y += suggestionCard.height + 12
         
-        let assistKitCard = ControlCardView(title: "ParkOur AssistKit")
-        assistKitCard.setHeightAccordingToContent()
+        let assistKitCard = assembleAssistKitCard()
         assistKitCard.y += suggestionCard.height + 12 + appCard.height + 12
         
         pullUpView.addSubview(suggestionCard)
         pullUpView.addSubview(appCard)
+        
+        
         pullUpView.addSubview(assistKitCard)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(connectButtonDidTap), name: .initPairingProcess, object: nil)
         
         // Do any additional setup after loading the view.
     }
 
+    
+    
+    func assembleAssistKitCard() -> ControlCardView {
+        let assistKitCard = ControlCardView(title: "ParkOur AssistKit")
+        let assistKitCardContentView = AssistKitCardContentView(didPair: false)
+        assistKitCard.contentView.addSubview(assistKitCardContentView)
+        assistKitCard.contentView.height = assistKitCardContentView.height
+        assistKitCard.setHeightAccordingToContent()
+        
+        
+        return assistKitCard
+    }
 
 }
 
@@ -103,4 +118,16 @@ extension MainViewController: AssistKitManagerDelegate {
 
 extension MainViewController: MKMapViewDelegate {
     
+}
+
+extension MainViewController {
+    @objc func connectButtonDidTap() {
+        let pairView = PairView()
+        
+        self.view.addSubview(pairView)
+        pairView.y = self.view.height
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            pairView.y = 126
+        }, completion: nil)
+    }
 }
