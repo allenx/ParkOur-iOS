@@ -39,6 +39,6 @@ class ControlCardView: UIView {
     }
     
     func setHeightAccordingToContent() {
-        self.height += contentView.height + topBottomPadding
+        self.height = 50 + contentView.height + topBottomPadding
     }
 }

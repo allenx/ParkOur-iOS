@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let mainVC = MainViewController()
         window?.rootViewController = mainVC
         window?.makeKeyAndVisible()
-        
+        UserDefaults.standard.removeObject(forKey: Meta.pairedAssistKitKey)
         return true
     }
 

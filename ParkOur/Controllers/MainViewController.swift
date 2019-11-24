@@ -15,6 +15,11 @@ class MainViewController: UIViewController {
     private var assistKitManager: AssistKitManager!
     var dot: UIView!
     var label: UILabel!
+    var pairView: PairView!
+    
+    var suggestionCard: ControlCardView!
+    var appCard: ControlCardView!
+    var assistKitCard: ControlCardView!
     
     private var pullUpView: PullUpView!
     
@@ -56,15 +61,15 @@ class MainViewController: UIViewController {
         view.addSubview(pullUpView)
         
         
-        let suggestionCard = ControlCardView(title: "Parking Suggestions")
+        suggestionCard = ControlCardView(title: "Parking Suggestions")
         suggestionCard.setHeightAccordingToContent()
 
-        let appCard = ControlCardView(title: "ParkOur App")
+        appCard = ControlCardView(title: "ParkOur App")
         appCard.setHeightAccordingToContent()
         
         appCard.y += suggestionCard.height + 12
         
-        let assistKitCard = assembleAssistKitCard()
+        assistKitCard = assembleAssistKitCard()
         assistKitCard.y += suggestionCard.height + 12 + appCard.height + 12
         
         pullUpView.addSubview(suggestionCard)
@@ -73,8 +78,8 @@ class MainViewController: UIViewController {
         
         pullUpView.addSubview(assistKitCard)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(connectButtonDidTap), name: .initPairingProcess, object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(discoverButtonDidTap), name: .initPairingProcess, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(connectButtonDidTap), name: .connectToFoundAssistKit, object: nil)
         // Do any additional setup after loading the view.
     }
 
@@ -82,7 +87,7 @@ class MainViewController: UIViewController {
     
     func assembleAssistKitCard() -> ControlCardView {
         let assistKitCard = ControlCardView(title: "ParkOur AssistKit")
-        let assistKitCardContentView = AssistKitCardContentView(didPair: false)
+        let assistKitCardContentView = AssistKitCardContentView(didPair: AssistKitManager.isPaired())
         assistKitCard.contentView.addSubview(assistKitCardContentView)
         assistKitCard.contentView.height = assistKitCardContentView.height
         assistKitCard.setHeightAccordingToContent()
@@ -96,17 +101,24 @@ class MainViewController: UIViewController {
 extension MainViewController: AssistKitManagerDelegate {
     func assistKitManagerDidPowerOn(assistKitManager: AssistKitManager) {
         label.text = "Powered On"
+        
     }
     
     
     func didDiscoverAssistKit(assistKitManager: AssistKitManager) {
         dot.backgroundColor = .yellow
         label.text = "Discovered AssistKit"
+        pairView.didDiscoverAssistKit()
     }
     
     func didConnectToAssistKit(assistKitManager: AssistKitManager) {
         dot.backgroundColor = .green
         label.text = "Connected to AssistKit"
+        NotificationCenter.default.post(name: .assistKitPairStateDidChange, object: nil)
+        self.assistKitCard.contentView.height = self.assistKitCard.contentView.subviews[0].height
+        
+        self.assistKitCard.setHeightAccordingToContent()
+        self.pairView.dismiss()
     }
     
     func didDisconnectWithAssistKit(assistKitManager: AssistKitManager) {
@@ -121,13 +133,19 @@ extension MainViewController: MKMapViewDelegate {
 }
 
 extension MainViewController {
-    @objc func connectButtonDidTap() {
-        let pairView = PairView()
-        
+    
+    
+    @objc func discoverButtonDidTap() {
+        pairView = PairView()
+        self.assistKitManager.discoverAssistKit()
         self.view.addSubview(pairView)
         pairView.y = self.view.height
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-            pairView.y = 126
+            self.pairView.y = 126
         }, completion: nil)
+    }
+    
+    @objc func connectButtonDidTap() {
+        self.assistKitManager.connectToAssistKit()
     }
 }

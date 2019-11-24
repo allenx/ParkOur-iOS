@@ -32,8 +32,6 @@ class PairView: UIView {
         pullUpHandle.layer.cornerRadius = 2
         self.addSubview(pullUpHandle)
         
-        
-        
         self.isUserInteractionEnabled = true
         
         findingIndicator = AssistKitFindingIndicator()
@@ -68,6 +66,7 @@ class PairView: UIView {
         connectButton.titleLabel?.textColor = .white
         connectButton.titleLabel?.font = .systemFont(ofSize: 24, weight: .semibold)
         connectButton.alpha = 0
+        connectButton.addTarget(self, action: #selector(connectButtonDidTap), for: .touchUpInside)
         self.addSubview(connectButton)
         
         cancelButton = UIButton(backgroundImageName: "cancelButton", desiredSize: CGSize(width: 32, height: 32))
@@ -79,9 +78,6 @@ class PairView: UIView {
         }
         cancelButton.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
         
-        Timer.scheduledTimer(withTimeInterval: 3.5, repeats: false) { (_) in
-            self.didDiscoverAssistKit()
-        }
     }
     
     func didDiscoverAssistKit() {
@@ -115,6 +111,10 @@ class PairView: UIView {
         }) { (_) in
             self.removeFromSuperview()
         }
+    }
+    
+    @objc func connectButtonDidTap() {
+        NotificationCenter.default.post(name: .connectToFoundAssistKit, object: nil)
     }
     
     required init?(coder: NSCoder) {

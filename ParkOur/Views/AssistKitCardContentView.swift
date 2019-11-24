@@ -71,7 +71,6 @@ class AssistKitCardContentView: CardContentView {
         self.addSubview(cloudToggle)
         
         self.height = connectionToggle.height
-        
     }
     
     func assembleConnectionToggle() -> Toggle {

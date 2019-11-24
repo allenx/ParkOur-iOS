@@ -23,7 +23,7 @@ class AssistKitManager: NSObject {
     
     static let shared = AssistKitManager()
     
-    private var connectedPeripheral: CBPeripheral!
+    private var discoveredPeripheral: CBPeripheral!
     private let centralManager = CBCentralManager()
     
     weak var delegate: AssistKitManagerDelegate?
@@ -43,6 +43,18 @@ class AssistKitManager: NSObject {
         return false
     }
     
+    func discoverAssistKit() {
+        self.centralManager.scanForPeripherals(withServices: [assistKitServiceUUID], options: nil)
+    }
+    
+    func stopScanning() {
+        self.centralManager.stopScan()
+    }
+    
+    func connectToAssistKit() {
+        self.centralManager.connect(discoveredPeripheral, options: nil)
+    }
+    
     
 }
 
@@ -53,31 +65,28 @@ extension AssistKitManager: CBCentralManagerDelegate {
         case .poweredOn:
             // Start discovering
             self.delegate?.assistKitManagerDidPowerOn(assistKitManager: self)
-            self.centralManager.scanForPeripherals(withServices: [assistKitServiceUUID], options: nil)
-            print("holy")
+
         default:
-            print("shit")
+            return
         }
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         print("found you")
         print(peripheral.name ?? "no name")
-        connectedPeripheral = peripheral
-        connectedPeripheral.delegate = self
-        self.centralManager.stopScan()
-        self.centralManager.connect(peripheral, options: nil)
+        discoveredPeripheral = peripheral
+        discoveredPeripheral.delegate = self
         self.delegate?.didDiscoverAssistKit(assistKitManager: self)
         
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        UserDefaults.standard.set(peripheral.identifier.uuidString, forKey: Meta.pairedAssistKitKey)
         self.delegate?.didConnectToAssistKit(assistKitManager: self)
         peripheral.discoverServices([assistKitServiceUUID])
     }
     
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        print("fuck")
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -85,8 +94,8 @@ extension AssistKitManager: CBCentralManagerDelegate {
     }
     
     func queryACharacteristic() {
-//        connectedPeripheral.readValue(for: [characteristicUUID])
-//        connectedPeripheral.readValue(for: connected)
+//        discoveredPeripheral.readValue(for: [characteristicUUID])
+//        discoveredPeripheral.readValue(for: connected)
     }
     
     
@@ -94,17 +103,20 @@ extension AssistKitManager: CBCentralManagerDelegate {
 
 extension AssistKitManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        print(peripheral.services)
         peripheral.discoverCharacteristics([characteristicUUID], for: peripheral.services![0])
     }
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         print("found characteristic")
-        print(service.characteristics)
         
-        peripheral.readValue(for: service.characteristics![0])
+        peripheral.setNotifyValue(true, for: service.characteristics![0])
     }
     
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        print(String(data: characteristic.value!, encoding: .utf8))
+    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        print(characteristic.value)
     }
+    
+//    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+//        print(String(data: characteristic.value!, encoding: .utf8))
+//    }
+    
 }

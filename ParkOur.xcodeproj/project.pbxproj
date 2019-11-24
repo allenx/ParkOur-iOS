@@ -123,9 +123,9 @@
 			children = (
 				9F7CD91D2387591B0002AD0C /* ClassExtensions.swift */,
 				9F1A9142237D30EF00BEE2EE /* AppDelegate.swift */,
-				917F8AF32389165400FC6058 /* Controllers */,
 				917F8AF22389164E00FC6058 /* Models */,
 				917F8AF12389162E00FC6058 /* Views */,
+				917F8AF32389165400FC6058 /* Controllers */,
 				9F1A914B237D30F000BEE2EE /* Assets.xcassets */,
 				9F1A914D237D30F000BEE2EE /* LaunchScreen.storyboard */,
 				9F1A9150237D30F000BEE2EE /* Info.plist */,
