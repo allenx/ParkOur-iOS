@@ -111,12 +111,16 @@ extension AssistKitManager: CBPeripheralDelegate {
         peripheral.setNotifyValue(true, for: service.characteristics![0])
     }
     
-    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        print(characteristic.value)
-    }
-    
-//    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-//        print(String(data: characteristic.value!, encoding: .utf8))
+//    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+//        print("updated value 1")
+//        print(characteristic.value)
+////        print(String(data: characteristic.value!, encoding: .utf8))
 //    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        print("updated value 2")
+        print(characteristic.value)
+        print(String(data: characteristic.value!, encoding: .utf8))
+    }
     
 }
