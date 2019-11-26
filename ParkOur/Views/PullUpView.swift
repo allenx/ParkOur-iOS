@@ -33,19 +33,44 @@ class PullUpView: UIView {
         self.addSubview(pullUpHandle)
         
         self.isUserInteractionEnabled = true
+        
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(panGesture:)))
+        panGesture.delegate = self
         self.addGestureRecognizer(panGesture)
         
-        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(swipeGesture:)))
-        self.addGestureRecognizer(swipeGesture)
+        let swipeGestureDown = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(swipeGesture:)))
+        swipeGestureDown.direction = .down
+        swipeGestureDown.delegate = self
+        self.addGestureRecognizer(swipeGestureDown)
+        
+//        let swipeGestureUp = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(swipeGesture:)))
+//        swipeGestureUp.direction = .up
+//        swipeGestureUp.delegate = self
+//        self.addGestureRecognizer(swipeGestureUp)
+//
+//        panGesture.require(toFail: swipeGestureUp)
+//        panGesture.require(toFail: swipeGestureDown)
         
     }
     
+    
     @objc func handlePan(panGesture: UIPanGestureRecognizer) {
-            
+        
         
         if panGesture.state == .began {
             panBeginLocation = panGesture.location(in: self)
+        }
+        
+        let yVelocity = panGesture.velocity(in: self).y
+        print(yVelocity)
+        if yVelocity < -2500 {
+            // swipe up
+            swipe(up: true)
+            return
+        } else if yVelocity > 2500 {
+            // swipe down
+            swipe(up: false)
+            return
         }
         
         let newLoc = panGesture.location(in: self)
@@ -77,13 +102,25 @@ class PullUpView: UIView {
         
     }
     
+    func swipe(up: Bool) {
+        if up {
+            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.y = 126
+            }, completion: nil)
+        } else {
+            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.y = 482
+            }, completion: nil)
+        }
+    }
+    
     @objc func handleSwipe(swipeGesture: UISwipeGestureRecognizer) {
         if swipeGesture.direction == .down {
-            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
                 self.y = 482
             }, completion: nil)
         } else {
-            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
                 self.y = 126
             }, completion: nil)
         }
@@ -92,4 +129,11 @@ class PullUpView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+
+extension PullUpView: UIGestureRecognizerDelegate {
+//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return true
+//    }
 }
