@@ -25,6 +25,7 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        UserDefaults.standard.removeObject(forKey: Meta.pairedAssistKitKey)
         assistKitManager = AssistKitManager()
         assistKitManager.delegate = self
         
@@ -40,16 +41,18 @@ class MainViewController: UIViewController {
         assistkitIndicator.layer.cornerRadius = 12
         view.addSubview(assistkitIndicator)
         assistkitIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerX.equalTo(self.view)
+            make.top.equalTo(self.view).offset(50)
             make.width.equalTo(300)
-            make.height.equalTo(100)
+            make.height.equalTo(300)
         }
         
         
         dot = UIView(frame: CGRect(x: 20, y: 20, width: 20, height: 20))
         dot.layer.cornerRadius = 10
         dot.backgroundColor = .gray
-        label = UILabel(frame: CGRect(x: 20, y: 50, width: 280, height: 40))
+        label = UILabel(frame: CGRect(x: 20, y: 50, width: 280, height: 200))
+        label.numberOfLines = 0
         label.text = "initialized"
         label.textColor = .black
         assistkitIndicator.addSubview(dot)
@@ -99,6 +102,7 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: AssistKitManagerDelegate {
+    
     func assistKitManagerDidPowerOn(assistKitManager: AssistKitManager) {
         label.text = "Powered On"
         
@@ -121,9 +125,15 @@ extension MainViewController: AssistKitManagerDelegate {
         self.pairView.dismiss()
     }
     
+    func didGetStringFromAssistKit(assistKitManager: AssistKitManager, string: String?) {
+        label.text = string
+    }
+    
+    
     func didDisconnectWithAssistKit(assistKitManager: AssistKitManager) {
         
     }
+    
     
     
 }
