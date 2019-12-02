@@ -62,7 +62,6 @@ class PullUpView: UIView {
         }
         
         let yVelocity = panGesture.velocity(in: self).y
-        print(yVelocity)
         if yVelocity < -2500 {
             // swipe up
             swipe(up: true)

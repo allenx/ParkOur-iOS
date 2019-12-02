@@ -2,8 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We want to use your location</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We want to use your location</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Hey</string>
+	<string>We want to use your bluetooth</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>We want to use your bluetooth</string>
 	<key>CFBundleDevelopmentRegion</key>

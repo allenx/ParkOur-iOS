@@ -7,5 +7,6 @@ target 'ParkOur' do
   
   # Pods for ParkOur
   pod 'SnapKit'
+  pod 'SFSafeSymbols'
   pod 'Alamofire'
 end

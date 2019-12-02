@@ -1,20 +1,24 @@
 PODS:
   - Alamofire (4.9.1)
+  - SFSafeSymbols (1.0.1)
   - SnapKit (5.0.1)
 
 DEPENDENCIES:
   - Alamofire
+  - SFSafeSymbols
   - SnapKit
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - SFSafeSymbols
     - SnapKit
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  SFSafeSymbols: 5b35657e1d57079cd56504b5075cc5167d587f36
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
 
-PODFILE CHECKSUM: 577bb19d78fd8869661f57dcb80bd4868a7aa938
+PODFILE CHECKSUM: f79d9077a63b0995faf465ada96f7dd00b681594
 
 COCOAPODS: 1.8.4

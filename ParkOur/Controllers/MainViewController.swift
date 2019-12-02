@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import SnapKit
+import SFSafeSymbols
 
 class MainViewController: UIViewController {
     
@@ -17,9 +18,15 @@ class MainViewController: UIViewController {
     var label: UILabel!
     var pairView: PairView!
     
+    var mapView: MKMapView!
+    
     var suggestionCard: ControlCardView!
     var appCard: ControlCardView!
     var assistKitCard: ControlCardView!
+    
+    var locationManager: CLLocationManager!
+    
+    let regionRadius: CLLocationDistance = 100
     
     private var pullUpView: PullUpView!
     
@@ -29,15 +36,59 @@ class MainViewController: UIViewController {
         assistKitManager = AssistKitManager()
         assistKitManager.delegate = self
         
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        
         view.backgroundColor = .white
-        let mapView = MKMapView(frame: view.frame)
+        mapView = MKMapView(frame: view.frame)
+        mapView.showsUserLocation = true
         view.addSubview(mapView)
         
         mapView.delegate = self
-
-        let assistkitIndicator = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 100))
-        assistkitIndicator.backgroundColor = .white
         
+        checkAuthorizationStatus()
+        
+        assembleIndicatorView(debug: false)
+        
+        
+        assembleMapControls()
+        
+        pullUpView = PullUpView()
+        print(pullUpView.frame)
+        view.addSubview(pullUpView)
+        
+        
+        suggestionCard = ControlCardView(title: "Parking Suggestions")
+        suggestionCard.setHeightAccordingToContent()
+        
+        appCard = ControlCardView(title: "ParkOur App")
+        appCard.setHeightAccordingToContent()
+        
+        appCard.y += suggestionCard.height + 12
+        
+        assistKitCard = assembleAssistKitCard()
+        assistKitCard.y += suggestionCard.height + 12 + appCard.height + 12
+        
+        pullUpView.addSubview(suggestionCard)
+        pullUpView.addSubview(appCard)
+        
+        
+        pullUpView.addSubview(assistKitCard)
+        
+        
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(discoverButtonDidTap), name: .initPairingProcess, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(connectButtonDidTap), name: .connectToFoundAssistKit, object: nil)
+        // Do any additional setup after loading the view.
+    }
+    
+    func assembleIndicatorView(debug: Bool) {
+        let assistkitIndicator = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 100))
+        if !debug {
+            assistkitIndicator.alpha = 0
+        }
+        assistkitIndicator.backgroundColor = .white
+
         assistkitIndicator.layer.cornerRadius = 12
         view.addSubview(assistkitIndicator)
         assistkitIndicator.snp.makeConstraints { make in
@@ -59,34 +110,7 @@ class MainViewController: UIViewController {
         
         assistkitIndicator.addSubview(label)
         
-        pullUpView = PullUpView()
-        print(pullUpView.frame)
-        view.addSubview(pullUpView)
-        
-        
-        suggestionCard = ControlCardView(title: "Parking Suggestions")
-        suggestionCard.setHeightAccordingToContent()
-
-        appCard = ControlCardView(title: "ParkOur App")
-        appCard.setHeightAccordingToContent()
-        
-        appCard.y += suggestionCard.height + 12
-        
-        assistKitCard = assembleAssistKitCard()
-        assistKitCard.y += suggestionCard.height + 12 + appCard.height + 12
-        
-        pullUpView.addSubview(suggestionCard)
-        pullUpView.addSubview(appCard)
-        
-        
-        pullUpView.addSubview(assistKitCard)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(discoverButtonDidTap), name: .initPairingProcess, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(connectButtonDidTap), name: .connectToFoundAssistKit, object: nil)
-        // Do any additional setup after loading the view.
     }
-
-    
     
     func assembleAssistKitCard() -> ControlCardView {
         let assistKitCard = ControlCardView(title: "ParkOur AssistKit")
@@ -98,7 +122,7 @@ class MainViewController: UIViewController {
         
         return assistKitCard
     }
-
+    
 }
 
 extension MainViewController: AssistKitManagerDelegate {
@@ -127,6 +151,11 @@ extension MainViewController: AssistKitManagerDelegate {
     
     func didGetStringFromAssistKit(assistKitManager: AssistKitManager, string: String?) {
         label.text = string
+        let dict = try! string!.data(using: .utf8)?.toDictionary()
+        if dict!["available"] as! Int == 0 {
+            print("should drop pin")
+            dropPinAtCurrentPlace()
+        }
     }
     
     
@@ -139,7 +168,87 @@ extension MainViewController: AssistKitManagerDelegate {
 }
 
 extension MainViewController: MKMapViewDelegate {
+    //    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+    //        print(userLocation.location!.coordinate)
+    //        locateToLocation(location: userLocation.location!)
+    //    }
     
+}
+
+extension MainViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        print("holy")
+        print(status.rawValue)
+        switch status {
+        case .authorizedAlways:
+            print("1")
+        //            locateToUserLocation()
+        case .authorizedWhenInUse:
+            print("2")
+        //            locateToUserLocation()
+        case .denied:
+            print("omg")
+        default:
+            return
+        }
+    }
+}
+
+extension MainViewController {
+    func assembleMapControls() {
+        let locationImage = UIImage(systemSymbol: .location)
+        let locationFillImage = UIImage(systemSymbol: .locationFill)
+        
+        let locateButton = UIButton()
+        locateButton.addTarget(self, action: #selector(locateToUserLocation), for: .touchUpInside)
+        locateButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        locateButton.imageEdgeInsets = .init(top: -4, left: -4, bottom: -4, right: -4)
+        locateButton.backgroundColor = .white
+        locateButton.layer.cornerRadius = 8
+        locateButton.layer.shadowColor = UIColor.gray.cgColor
+        locateButton.layer.shadowOpacity = 0.5
+        locateButton.layer.shadowOffset = .zero
+        locateButton.setImage(locationImage, for: .normal)
+        locateButton.setImage(locationFillImage, for: .highlighted)
+        self.view.addSubview(locateButton)
+        locateButton.snp.makeConstraints { (make) in
+            make.top.equalTo(self.view).offset(100)
+            make.right.equalTo(self.view).offset(-24)
+        }
+    }
+    
+    @objc func locateToUserLocation() {
+        let userLoc = mapView.userLocation
+        if userLoc.coordinate.latitude == 0 && userLoc.coordinate.longitude == 0 {
+            print("what?")
+            checkAuthorizationStatus()
+        } else {
+            print("holy1")
+            let cl = CLLocation(latitude: userLoc.coordinate.latitude, longitude: userLoc.coordinate.longitude)
+            locateToLocation(location: cl)
+        }
+        
+    }
+    
+    @objc func locateToLocation(location: CLLocation) {
+        let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius*2, longitudinalMeters: regionRadius*2)
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
+    
+    func checkAuthorizationStatus() {
+        if CLLocationManager.authorizationStatus() != .authorizedAlways || CLLocationManager.authorizationStatus() != .authorizedWhenInUse {
+            locationManager.requestAlwaysAuthorization()
+        }
+    }
+    
+    func dropPinAtCurrentPlace() {
+        let loc = mapView.userLocation
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = loc.coordinate
+        annotation.title = "new loc"
+        print("holy shit")
+        mapView.addAnnotation(annotation)
+    }
 }
 
 extension MainViewController {
