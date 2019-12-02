@@ -23,4 +23,6 @@ extension Notification.Name {
     static let assistKitPairStateDidChange = Notification.Name("assistKitPairStateDidChange")
     static let initPairingProcess = Notification.Name(rawValue: "initPairingProcess")
     static let connectToFoundAssistKit = Notification.Name(rawValue: "connectToFoundAssistKit")
+    
+    static let findParkedCar = Notification.Name("findParkedCar")
 }

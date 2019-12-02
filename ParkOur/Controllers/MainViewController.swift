@@ -30,16 +30,26 @@ class MainViewController: UIViewController {
     
     let regionRadius: CLLocationDistance = 100
     
+    
     private var pullUpView: PullUpView!
+    
+    private var currentLocation: CLLocation!
+    private var mostRecentPlacemark: CLPlacemark!
+    private var lastGeocodeTime: Date!
+    
+    let geocoder = CLGeocoder()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         UserDefaults.standard.removeObject(forKey: Meta.pairedAssistKitKey)
         assistKitManager = AssistKitManager()
         assistKitManager.delegate = self
         
         locationManager = CLLocationManager()
         locationManager.delegate = self
+        
+        hideKeyboardWhenTappedAround()
         
         view.backgroundColor = .white
         mapView = MKMapView(frame: view.frame)
@@ -61,12 +71,12 @@ class MainViewController: UIViewController {
         
         assembleSearchBar()
         
-        suggestionCard = ControlCardView(title: "Parking Suggestions")
-        suggestionCard.setHeightAccordingToContent()
+        let hintView = HintView(content: "Pair with ParkOur AssistKit to help detect free empty spots on the street while driving")
+        pullUpView.addSubview(hintView)
         
-        appCard = ControlCardView(title: "ParkOur App")
-        appCard.setHeightAccordingToContent()
+        suggestionCard = assembleSuggestionCard()
         
+        appCard = assembleAppInfoCard()
         appCard.y += suggestionCard.height + 12
         
         assistKitCard = assembleAssistKitCard()
@@ -82,6 +92,8 @@ class MainViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(discoverButtonDidTap), name: .initPairingProcess, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(connectButtonDidTap), name: .connectToFoundAssistKit, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(findParkedCar), name: .findParkedCar, object: nil)
         // Do any additional setup after loading the view.
     }
     
@@ -134,22 +146,35 @@ class MainViewController: UIViewController {
     func assembleAssistKitCard() -> ControlCardView {
         let assistKitCard = ControlCardView(title: "ParkOur AssistKit")
         let assistKitCardContentView = AssistKitCardContentView(didPair: AssistKitManager.isPaired())
-        assistKitCard.contentView.addSubview(assistKitCardContentView)
-        assistKitCard.contentView.height = assistKitCardContentView.height
-        assistKitCard.setHeightAccordingToContent()
-        
+
+        assistKitCard.addContentView(cardContentView: assistKitCardContentView)
         
         return assistKitCard
     }
     
     func assembleSuggestionCard() -> ControlCardView {
         let card = ControlCardView(title: "Parking Suggestions")
+        let fooSpots = [false, true, false, false, true, true, false]
+        
+        
+        
+//        let whereabouts = mostRecentPlacemark.name
+        let whereabouts = "777 Middlefield Rd."
+        
+        let contentView = SuggestionCardContentView(whereabouts: whereabouts ?? "Nil", spots: fooSpots)
+        card.addContentView(cardContentView: contentView)
         
         return card
     }
     
-    func assembleSettingsCard() -> ControlCardView {
+    func assembleAppInfoCard() -> ControlCardView {
         let card = ControlCardView(title: "ParkOur App")
+        
+        let whereabouts = "3.7km away. Near Moffett Blvd."
+        let myCarName = "Honda Civic"
+        
+        let contentView = AppInfoCardContentView(parkedCarWhereabouts: whereabouts, carName: myCarName)
+        card.addContentView(cardContentView: contentView)
         
         return card
     }
@@ -177,6 +202,7 @@ extension MainViewController: AssistKitManagerDelegate {
         self.assistKitCard.contentView.height = self.assistKitCard.contentView.subviews[0].height
         
         self.assistKitCard.setHeightAccordingToContent()
+        
         self.pairView.dismiss()
     }
     
@@ -199,10 +225,36 @@ extension MainViewController: AssistKitManagerDelegate {
 }
 
 extension MainViewController: MKMapViewDelegate {
-    //    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-    //        print(userLocation.location!.coordinate)
-    //        locateToLocation(location: userLocation.location!)
-    //    }
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+        guard let newLocation = userLocation.location else { return }
+        
+        let currentTime = Date()
+        let lastLocation = self.currentLocation
+        self.currentLocation = newLocation
+        
+        // Only get new placemark information if you don't have a previous location,
+        // if the user has moved a meaningful distance from the previous location, such as 1000 meters,
+        // and if it's been 60 seconds since the last geocode request.
+        if let lastLocation = lastLocation,
+            newLocation.distance(from: lastLocation) <= 1000,
+            let lastTime = lastGeocodeTime,
+            currentTime.timeIntervalSince(lastTime) < 60 {
+            return
+        }
+        
+        // Convert the user's location to a user-friendly place name by reverse geocoding the location.
+        lastGeocodeTime = currentTime
+        geocoder.reverseGeocodeLocation(newLocation) { (placemarks, error) in
+            guard error == nil else {
+                return
+            }
+            
+            // Most geocoding requests contain only one result.
+            if let firstPlacemark = placemarks?.first {
+                self.mostRecentPlacemark = firstPlacemark
+            }
+        }
+    }
     
 }
 
@@ -303,6 +355,10 @@ extension MainViewController {
     @objc func connectButtonDidTap() {
         self.assistKitManager.connectToAssistKit()
     }
+    
+    @objc func findParkedCar() {
+        
+    }
 }
 
 
@@ -331,5 +387,6 @@ extension MainViewController: UISearchBarDelegate {
             return
         }
         mapKitSearchRequest(text: str)
+        searchBar.searchTextField.resignFirstResponder()
     }
 }

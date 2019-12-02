@@ -13,6 +13,9 @@
 		917F8AF5238919D700FC6058 /* PairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917F8AF4238919D700FC6058 /* PairView.swift */; };
 		917F8AF72389244A00FC6058 /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917F8AF62389244A00FC6058 /* ToggleButton.swift */; };
 		917F8AF923892CCD00FC6058 /* AssistKitFindingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917F8AF823892CCD00FC6058 /* AssistKitFindingIndicator.swift */; };
+		91D28F97239547D700C200AB /* SuggestionCardContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D28F96239547D700C200AB /* SuggestionCardContentView.swift */; };
+		91D28F9C239550D600C200AB /* AppInfoCardContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D28F9B239550D600C200AB /* AppInfoCardContentView.swift */; };
+		91D28F9E23955A3300C200AB /* HintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D28F9D23955A3300C200AB /* HintView.swift */; };
 		9F1A9143237D30EF00BEE2EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1A9142237D30EF00BEE2EE /* AppDelegate.swift */; };
 		9F1A9147237D30EF00BEE2EE /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1A9146237D30EF00BEE2EE /* MainViewController.swift */; };
 		9F1A914C237D30F000BEE2EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F1A914B237D30F000BEE2EE /* Assets.xcassets */; };
@@ -34,6 +37,9 @@
 		917F8AF4238919D700FC6058 /* PairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairView.swift; sourceTree = "<group>"; };
 		917F8AF62389244A00FC6058 /* ToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
 		917F8AF823892CCD00FC6058 /* AssistKitFindingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistKitFindingIndicator.swift; sourceTree = "<group>"; };
+		91D28F96239547D700C200AB /* SuggestionCardContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionCardContentView.swift; sourceTree = "<group>"; };
+		91D28F9B239550D600C200AB /* AppInfoCardContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoCardContentView.swift; sourceTree = "<group>"; };
+		91D28F9D23955A3300C200AB /* HintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HintView.swift; sourceTree = "<group>"; };
 		990AF7E827CE5C0A63745F06 /* Pods-ParkOur.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ParkOur.release.xcconfig"; path = "Target Support Files/Pods-ParkOur/Pods-ParkOur.release.xcconfig"; sourceTree = "<group>"; };
 		9F1A913F237D30EF00BEE2EE /* ParkOur.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ParkOur.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F1A9142237D30EF00BEE2EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -66,14 +72,13 @@
 			isa = PBXGroup;
 			children = (
 				9F1A9156237D356800BEE2EE /* ExperimentView.swift */,
+				91D28F9D23955A3300C200AB /* HintView.swift */,
 				9F7CD91F23875D030002AD0C /* PullUpView.swift */,
 				9FF9CC5C237E1C77005F660C /* ControlCardView.swift */,
 				917F8AEF238910B300FC6058 /* CardContentView.swift */,
-				917F8AED23890E8000FC6058 /* AssistKitCardContentView.swift */,
-				917F8AF62389244A00FC6058 /* ToggleButton.swift */,
-				917F8AF4238919D700FC6058 /* PairView.swift */,
-				917F8AF823892CCD00FC6058 /* AssistKitFindingIndicator.swift */,
-				9FBE3FAA2395151200E13A3E /* AbstractStreetView.swift */,
+				91D28F9A239550BF00C200AB /* AppInfo */,
+				91D28F992395484D00C200AB /* Suggestions */,
+				91D28F982395481900C200AB /* AssistKit */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -93,6 +98,34 @@
 				9F1A9146237D30EF00BEE2EE /* MainViewController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		91D28F982395481900C200AB /* AssistKit */ = {
+			isa = PBXGroup;
+			children = (
+				917F8AF62389244A00FC6058 /* ToggleButton.swift */,
+				917F8AED23890E8000FC6058 /* AssistKitCardContentView.swift */,
+				917F8AF4238919D700FC6058 /* PairView.swift */,
+				917F8AF823892CCD00FC6058 /* AssistKitFindingIndicator.swift */,
+			);
+			path = AssistKit;
+			sourceTree = "<group>";
+		};
+		91D28F992395484D00C200AB /* Suggestions */ = {
+			isa = PBXGroup;
+			children = (
+				9FBE3FAA2395151200E13A3E /* AbstractStreetView.swift */,
+				91D28F96239547D700C200AB /* SuggestionCardContentView.swift */,
+			);
+			path = Suggestions;
+			sourceTree = "<group>";
+		};
+		91D28F9A239550BF00C200AB /* AppInfo */ = {
+			isa = PBXGroup;
+			children = (
+				91D28F9B239550D600C200AB /* AppInfoCardContentView.swift */,
+			);
+			path = AppInfo;
 			sourceTree = "<group>";
 		};
 		94C498F79AFF935EA7E9CA69 /* Frameworks */ = {
@@ -269,7 +302,10 @@
 				917F8AF5238919D700FC6058 /* PairView.swift in Sources */,
 				917F8AF72389244A00FC6058 /* ToggleButton.swift in Sources */,
 				9FBE3FAB2395151200E13A3E /* AbstractStreetView.swift in Sources */,
+				91D28F9E23955A3300C200AB /* HintView.swift in Sources */,
+				91D28F9C239550D600C200AB /* AppInfoCardContentView.swift in Sources */,
 				9F1A9143237D30EF00BEE2EE /* AppDelegate.swift in Sources */,
+				91D28F97239547D700C200AB /* SuggestionCardContentView.swift in Sources */,
 				9FF9CC5F237E2921005F660C /* Meta.swift in Sources */,
 				917F8AEE23890E8000FC6058 /* AssistKitCardContentView.swift in Sources */,
 				9F1A9157237D356800BEE2EE /* ExperimentView.swift in Sources */,
