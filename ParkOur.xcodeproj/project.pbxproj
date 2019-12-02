@@ -20,6 +20,7 @@
 		9F1A9157237D356800BEE2EE /* ExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1A9156237D356800BEE2EE /* ExperimentView.swift */; };
 		9F7CD91E2387591B0002AD0C /* ClassExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7CD91D2387591B0002AD0C /* ClassExtensions.swift */; };
 		9F7CD92023875D030002AD0C /* PullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7CD91F23875D030002AD0C /* PullUpView.swift */; };
+		9FBE3FAB2395151200E13A3E /* AbstractStreetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBE3FAA2395151200E13A3E /* AbstractStreetView.swift */; };
 		9FF9CC5B237E125E005F660C /* AssistKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF9CC5A237E125E005F660C /* AssistKitManager.swift */; };
 		9FF9CC5D237E1C77005F660C /* ControlCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF9CC5C237E1C77005F660C /* ControlCardView.swift */; };
 		9FF9CC5F237E2921005F660C /* Meta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF9CC5E237E2921005F660C /* Meta.swift */; };
@@ -43,6 +44,7 @@
 		9F1A9156237D356800BEE2EE /* ExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentView.swift; sourceTree = "<group>"; };
 		9F7CD91D2387591B0002AD0C /* ClassExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassExtensions.swift; sourceTree = "<group>"; };
 		9F7CD91F23875D030002AD0C /* PullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpView.swift; sourceTree = "<group>"; };
+		9FBE3FAA2395151200E13A3E /* AbstractStreetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractStreetView.swift; sourceTree = "<group>"; };
 		9FF9CC5A237E125E005F660C /* AssistKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistKitManager.swift; sourceTree = "<group>"; };
 		9FF9CC5C237E1C77005F660C /* ControlCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCardView.swift; sourceTree = "<group>"; };
 		9FF9CC5E237E2921005F660C /* Meta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meta.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				917F8AF62389244A00FC6058 /* ToggleButton.swift */,
 				917F8AF4238919D700FC6058 /* PairView.swift */,
 				917F8AF823892CCD00FC6058 /* AssistKitFindingIndicator.swift */,
+				9FBE3FAA2395151200E13A3E /* AbstractStreetView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 				9FF9CC5D237E1C77005F660C /* ControlCardView.swift in Sources */,
 				917F8AF5238919D700FC6058 /* PairView.swift in Sources */,
 				917F8AF72389244A00FC6058 /* ToggleButton.swift in Sources */,
+				9FBE3FAB2395151200E13A3E /* AbstractStreetView.swift in Sources */,
 				9F1A9143237D30EF00BEE2EE /* AppDelegate.swift in Sources */,
 				9FF9CC5F237E2921005F660C /* Meta.swift in Sources */,
 				917F8AEE23890E8000FC6058 /* AssistKitCardContentView.swift in Sources */,

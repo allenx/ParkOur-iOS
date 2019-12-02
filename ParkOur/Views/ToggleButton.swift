@@ -34,13 +34,20 @@ class Toggle: UIButton {
     
     var backgroundColorOn: UIColor!
     var backgroundColorOff: UIColor!
+
     
-    convenience init(meta: ToggleMeta) {
+    convenience init(meta: ToggleMeta, state: ToggleState) {
         self.init()
         width = meta.width
         height = meta.height
         layer.cornerRadius = meta.cornerRadius
-        backgroundColor = meta.backgroundColorOn
+        toggleState = state
+        if state == .on {
+            layer.backgroundColor = meta.backgroundColorOn.cgColor
+        } else {
+            layer.backgroundColor = meta.backgroundColorOff.cgColor
+        }
+        
         
         titleString = meta.titleString
         statusOnString = meta.statusOnString
@@ -49,7 +56,31 @@ class Toggle: UIButton {
         backgroundColorOn = meta.backgroundColorOn
         backgroundColorOff = meta.backgroundColorOff
         
+        isUserInteractionEnabled = true
+        
+        addTarget(self, action: #selector(tapped), for: .touchUpInside)
     }
+    
+    
+    @objc func tapped() {
+        switch toggleState {
+        case .on:
+            toggleState = .off
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.layer.backgroundColor = self.backgroundColorOff.cgColor
+            }, completion: nil)
+
+        case .off:
+            toggleState = .on
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.layer.backgroundColor = self.backgroundColorOn.cgColor
+            }, completion: nil)
+            
+        default:
+            return
+        }
+    }
+    
     
     
 }

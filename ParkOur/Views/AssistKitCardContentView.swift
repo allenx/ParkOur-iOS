@@ -74,7 +74,11 @@ class AssistKitCardContentView: CardContentView {
     }
     
     func assembleConnectionToggle() -> Toggle {
-        let connectionToggle = Toggle(meta: connectionToggleMeta)
+        var state = ToggleState.on
+        if !AssistKitManager.isPaired() {
+            state = .off
+        }
+        let connectionToggle = Toggle(meta: connectionToggleMeta, state: state)
         
         let raspberryPiIcon = UIImageView.init(imageName: "RaspberryPiWhite", desiredSize: CGSize(width: 26, height: 32.71))!
         connectionToggle.addSubview(raspberryPiIcon)
@@ -104,7 +108,7 @@ class AssistKitCardContentView: CardContentView {
     
     
     func assembleCloudToggle() -> Toggle {
-        let cloudToggle = Toggle(meta: cloudToggleMeta)
+        let cloudToggle = Toggle(meta: cloudToggleMeta, state: .on)
         
         let cloudIcon = UIImageView.init(imageName: "ToCloud", desiredSize: CGSize(width: 34, height: 34))!
         cloudToggle.addSubview(cloudIcon)

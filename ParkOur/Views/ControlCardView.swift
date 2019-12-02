@@ -23,7 +23,7 @@ class ControlCardView: UIView {
         layer.cornerRadius = 12
         width = UIScreen.main.bounds.width - 50
         x = 25
-        y = 40
+        y = 90
         height = 50
         
         let titleLabel = UILabel(text: title)

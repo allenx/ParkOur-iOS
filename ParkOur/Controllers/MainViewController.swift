@@ -20,6 +20,8 @@ class MainViewController: UIViewController {
     
     var mapView: MKMapView!
     
+    var searchBar: UISearchBar!
+    
     var suggestionCard: ControlCardView!
     var appCard: ControlCardView!
     var assistKitCard: ControlCardView!
@@ -57,6 +59,7 @@ class MainViewController: UIViewController {
         print(pullUpView.frame)
         view.addSubview(pullUpView)
         
+        assembleSearchBar()
         
         suggestionCard = ControlCardView(title: "Parking Suggestions")
         suggestionCard.setHeightAccordingToContent()
@@ -112,6 +115,22 @@ class MainViewController: UIViewController {
         
     }
     
+    func assembleSearchBar() {
+        searchBar = UISearchBar(frame: CGRect(x: 25, y: 25, width: view.width - 50, height: 44))
+        searchBar.searchBarStyle = .minimal
+//        searchBar.searchTextField.backgroundColor = UIColor(hexString: "#E6E6E6")
+        
+        searchBar.layer.cornerRadius = 22
+        searchBar.clipsToBounds = true
+        searchBar.backgroundColor = UIColor(hexString: "#E6E6E6")
+        searchBar.searchTextField.borderStyle = .none
+        
+        searchBar.delegate = self
+        searchBar.placeholder = "Search for a place or address"
+        
+        pullUpView.addSubview(searchBar)
+    }
+    
     func assembleAssistKitCard() -> ControlCardView {
         let assistKitCard = ControlCardView(title: "ParkOur AssistKit")
         let assistKitCardContentView = AssistKitCardContentView(didPair: AssistKitManager.isPaired())
@@ -121,6 +140,18 @@ class MainViewController: UIViewController {
         
         
         return assistKitCard
+    }
+    
+    func assembleSuggestionCard() -> ControlCardView {
+        let card = ControlCardView(title: "Parking Suggestions")
+        
+        return card
+    }
+    
+    func assembleSettingsCard() -> ControlCardView {
+        let card = ControlCardView(title: "ParkOur App")
+        
+        return card
     }
     
 }
@@ -192,6 +223,13 @@ extension MainViewController: CLLocationManagerDelegate {
             return
         }
     }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            print("fuck")
+            locateToLocation(location: location)
+        }
+    }
 }
 
 extension MainViewController {
@@ -213,17 +251,15 @@ extension MainViewController {
         self.view.addSubview(locateButton)
         locateButton.snp.makeConstraints { (make) in
             make.top.equalTo(self.view).offset(100)
-            make.right.equalTo(self.view).offset(-24)
+            make.right.equalTo(self.view).offset(-8)
         }
     }
     
     @objc func locateToUserLocation() {
         let userLoc = mapView.userLocation
         if userLoc.coordinate.latitude == 0 && userLoc.coordinate.longitude == 0 {
-            print("what?")
             checkAuthorizationStatus()
         } else {
-            print("holy1")
             let cl = CLLocation(latitude: userLoc.coordinate.latitude, longitude: userLoc.coordinate.longitude)
             locateToLocation(location: cl)
         }
@@ -266,5 +302,34 @@ extension MainViewController {
     
     @objc func connectButtonDidTap() {
         self.assistKitManager.connectToAssistKit()
+    }
+}
+
+
+extension MainViewController: UISearchBarDelegate {
+    func mapKitSearchRequest(text: String) {
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = text
+        request.region = mapView.region
+        let search = MKLocalSearch(request: request)
+        search.start { (response, _) in
+            guard let response = response else {
+                return
+            }
+            print(response.mapItems)
+            self.pullUpView.moveDown()
+            self.mapView.setRegion(response.boundingRegion, animated: true)
+        }
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        pullUpView.moveUp()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let str = searchBar.text else {
+            return
+        }
+        mapKitSearchRequest(text: str)
     }
 }
