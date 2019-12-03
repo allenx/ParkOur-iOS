@@ -35,9 +35,11 @@ class MainViewController: UIViewController {
     
     let regionRadius: CLLocationDistance = 100
     
+    var didStartToGetBeginningOfSpots = false
     var currentBeginning: CLLocationCoordinate2D!
     var currentEnd: CLLocationCoordinate2D!
     var availablePaths: [AvailablePath] = []
+    
     
     private var pullUpView: PullUpView!
     
@@ -362,7 +364,11 @@ extension MainViewController {
         switch code {
         case 0:
             currentBeginning = loc.coordinate
+            didStartToGetBeginningOfSpots = true
         case 1:
+            if !didStartToGetBeginningOfSpots {
+                return
+            }
             currentEnd = loc.coordinate
             let path = AvailablePath(beginning: currentBeginning, end: currentEnd)
             availablePaths.append(path)
