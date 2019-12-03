@@ -23,7 +23,7 @@ class ControlCardView: UIView {
         layer.cornerRadius = 12
         width = UIScreen.main.bounds.width - 50
         x = 25
-        y = 40
+        y = 196
         height = 50
         
         let titleLabel = UILabel(text: title)
@@ -38,6 +38,12 @@ class ControlCardView: UIView {
         addSubview(contentView)
     }
     
+    func addContentView(cardContentView: CardContentView) {
+        contentView.addSubview(cardContentView)
+        contentView.height = cardContentView.height
+        self.height = 50 + contentView.height + topBottomPadding
+    }
+
     func setHeightAccordingToContent() {
         self.height = 50 + contentView.height + topBottomPadding
     }

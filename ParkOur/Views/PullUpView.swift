@@ -62,7 +62,6 @@ class PullUpView: UIView {
         }
         
         let yVelocity = panGesture.velocity(in: self).y
-        print(yVelocity)
         if yVelocity < -2500 {
             // swipe up
             swipe(up: true)
@@ -85,13 +84,9 @@ class PullUpView: UIView {
         }
         if panGesture.state == .ended {
             if previewY >= 304 {
-                UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                    self.y = 482
-                }, completion: nil)
+                moveDown()
             } else {
-                UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                    self.y = 126
-                }, completion: nil)
+                moveUp()
             }
         } else {
             self.y = previewY
@@ -104,30 +99,34 @@ class PullUpView: UIView {
     
     func swipe(up: Bool) {
         if up {
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.y = 126
-            }, completion: nil)
+            moveUp()
         } else {
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.y = 482
-            }, completion: nil)
+            moveDown()
         }
     }
     
     @objc func handleSwipe(swipeGesture: UISwipeGestureRecognizer) {
         if swipeGesture.direction == .down {
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.y = 482
-            }, completion: nil)
+            moveDown()
         } else {
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.y = 126
-            }, completion: nil)
+            moveUp()
         }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    open func moveUp() {
+        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            self.y = 126
+        }, completion: nil)
+    }
+    
+    open func moveDown() {
+        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            self.y = 482
+        }, completion: nil)
     }
 }
 

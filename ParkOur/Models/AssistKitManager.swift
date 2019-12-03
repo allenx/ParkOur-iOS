@@ -42,6 +42,9 @@ class AssistKitManager: NSObject {
         }
         return false
     }
+
+    // TODO: Get state
+    open var isConnected: Bool!
     
     func discoverAssistKit() {
         self.centralManager.scanForPeripherals(withServices: [assistKitServiceUUID], options: nil)
