@@ -14,6 +14,15 @@ import SFSafeSymbols
 struct AvailablePath {
     let beginning: CLLocationCoordinate2D
     let end: CLLocationCoordinate2D
+    
+    func length() -> Double {
+        let beginningLoc = CLLocation(latitude: beginning.latitude, longitude: beginning.longitude)
+        let endLoc = CLLocation(latitude: end.latitude, longitude: end.longitude)
+        
+        let distance = endLoc.distance(from: beginningLoc)
+        
+        return Double(distance)
+    }
 }
 
 class MainViewController: UIViewController {
@@ -21,6 +30,7 @@ class MainViewController: UIViewController {
     private var assistKitManager: AssistKitManager!
     var dot: UIView!
     var label: UILabel!
+    var spotsIndicatorLabel: UILabel!
     var pairView: PairView!
     
     var mapView: MKMapView!
@@ -40,6 +50,7 @@ class MainViewController: UIViewController {
     var currentEnd: CLLocationCoordinate2D!
     var availablePaths: [AvailablePath] = []
     
+    var didStart = false
     
     private var pullUpView: PullUpView!
     
@@ -70,7 +81,7 @@ class MainViewController: UIViewController {
         
         checkAuthorizationStatus()
         
-        assembleIndicatorView(debug: false)
+        assembleIndicatorView(debug: true)
         
         
         assembleMapControls()
@@ -120,19 +131,24 @@ class MainViewController: UIViewController {
             make.centerX.equalTo(self.view)
             make.top.equalTo(self.view).offset(50)
             make.width.equalTo(300)
-            make.height.equalTo(300)
+            make.height.equalTo(100)
         }
         
         
         dot = UIView(frame: CGRect(x: 20, y: 20, width: 20, height: 20))
         dot.layer.cornerRadius = 10
         dot.backgroundColor = .gray
-        label = UILabel(frame: CGRect(x: 20, y: 50, width: 280, height: 200))
+        assistkitIndicator.addSubview(dot)
+        
+        spotsIndicatorLabel = UILabel(frame: CGRect(x: 50, y: 20, width: 130, height: 20))
+        spotsIndicatorLabel.text = "getting information"
+        spotsIndicatorLabel.textColor = .black
+        assistkitIndicator.addSubview(spotsIndicatorLabel)
+        
+        label = UILabel(frame: CGRect(x: 20, y: 50, width: 280, height: 40))
         label.numberOfLines = 0
         label.text = "initialized"
         label.textColor = .black
-        assistkitIndicator.addSubview(dot)
-        
         assistkitIndicator.addSubview(label)
         
     }
@@ -217,7 +233,7 @@ extension MainViewController: AssistKitManagerDelegate {
     }
     
     func didGetStringFromAssistKit(assistKitManager: AssistKitManager, string: String?) {
-        label.text = string
+        
         let dict = try! string!.data(using: .utf8)?.toDictionary()
         if dict!["available"] as! Int == 0 || dict!["available"] as! Int == 1 {
             print("should drop pin")
@@ -304,7 +320,12 @@ extension MainViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
-            locateToLocation(location: location)
+            if !didStart {
+                didStart = true
+                locateToLocation(location: location)
+                
+            }
+            
         }
     }
 }
@@ -363,9 +384,11 @@ extension MainViewController {
         print("got new loc")
         switch code {
         case 0:
+            spotsIndicatorLabel.text = "Emtpy Start"
             currentBeginning = loc.coordinate
             didStartToGetBeginningOfSpots = true
         case 1:
+            spotsIndicatorLabel.text = "Empty End"
             if !didStartToGetBeginningOfSpots {
                 return
             }
@@ -373,7 +396,8 @@ extension MainViewController {
             let path = AvailablePath(beginning: currentBeginning, end: currentEnd)
             availablePaths.append(path)
             drawLine(path: path)
-            
+            let length = path.length()
+            label.text = "\(length) meters"
         default:
             return
         }
