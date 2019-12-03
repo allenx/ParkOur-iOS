@@ -11,6 +11,11 @@ import MapKit
 import SnapKit
 import SFSafeSymbols
 
+struct AvailablePath {
+    let beginning: CLLocationCoordinate2D
+    let end: CLLocationCoordinate2D
+}
+
 class MainViewController: UIViewController {
     
     private var assistKitManager: AssistKitManager!
@@ -30,6 +35,9 @@ class MainViewController: UIViewController {
     
     let regionRadius: CLLocationDistance = 100
     
+    var currentBeginning: CLLocationCoordinate2D!
+    var currentEnd: CLLocationCoordinate2D!
+    var availablePaths: [AvailablePath] = []
     
     private var pullUpView: PullUpView!
     
@@ -209,9 +217,9 @@ extension MainViewController: AssistKitManagerDelegate {
     func didGetStringFromAssistKit(assistKitManager: AssistKitManager, string: String?) {
         label.text = string
         let dict = try! string!.data(using: .utf8)?.toDictionary()
-        if dict!["available"] as! Int == 0 {
+        if dict!["available"] as! Int == 0 || dict!["available"] as! Int == 1 {
             print("should drop pin")
-            dropPinAtCurrentPlace()
+            dropPinAtCurrentPlace(code: dict!["available"] as! Int)
         }
     }
     
@@ -256,6 +264,18 @@ extension MainViewController: MKMapViewDelegate {
         }
     }
     
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if overlay is MKPolyline {
+            let lineRenderer = MKPolylineRenderer(overlay: overlay)
+            lineRenderer.strokeColor = UIColor(hexString: "#73D671")
+            lineRenderer.lineWidth = 4
+            
+            return lineRenderer
+        }
+        
+        return MKOverlayRenderer()
+    }
+    
 }
 
 extension MainViewController: CLLocationManagerDelegate {
@@ -265,9 +285,13 @@ extension MainViewController: CLLocationManagerDelegate {
         switch status {
         case .authorizedAlways:
             print("1")
+            manager.startUpdatingLocation()
+            manager.startUpdatingHeading()
         //            locateToUserLocation()
         case .authorizedWhenInUse:
             print("2")
+            manager.startUpdatingLocation()
+            manager.startUpdatingHeading()
         //            locateToUserLocation()
         case .denied:
             print("omg")
@@ -278,7 +302,6 @@ extension MainViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
-            print("fuck")
             locateToLocation(location: location)
         }
     }
@@ -329,13 +352,31 @@ extension MainViewController {
         }
     }
     
-    func dropPinAtCurrentPlace() {
-        let loc = mapView.userLocation
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = loc.coordinate
-        annotation.title = "new loc"
-        print("holy shit")
-        mapView.addAnnotation(annotation)
+    func dropPinAtCurrentPlace(code: Int) {
+        
+        guard let loc = locationManager.location else {
+            return
+        }
+
+        print("got new loc")
+        switch code {
+        case 0:
+            currentBeginning = loc.coordinate
+        case 1:
+            currentEnd = loc.coordinate
+            let path = AvailablePath(beginning: currentBeginning, end: currentEnd)
+            availablePaths.append(path)
+            drawLine(path: path)
+            
+        default:
+            return
+        }
+    }
+    
+    func drawLine(path: AvailablePath) {
+        let locations = [path.beginning, path.end]
+        let line = MKPolyline(coordinates: locations, count: 2)
+        mapView.addOverlay(line)
     }
 }
 
