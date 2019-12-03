@@ -58,6 +58,8 @@ class MainViewController: UIViewController {
     private var mostRecentPlacemark: CLPlacemark!
     private var lastGeocodeTime: Date!
     
+    private var parkedCarCoordinate: CLLocationCoordinate2D!
+    
     let geocoder = CLGeocoder()
     
     override func viewDidLoad() {
@@ -73,21 +75,26 @@ class MainViewController: UIViewController {
         hideKeyboardWhenTappedAround()
         
         view.backgroundColor = .white
+        
+        getParkedCarCoordinate()
+        
         mapView = MKMapView(frame: view.frame)
         mapView.showsUserLocation = true
         view.addSubview(mapView)
-        
+        assignTapGestureToMapView()
         mapView.delegate = self
         
         checkAuthorizationStatus()
         
-        assembleIndicatorView(debug: true)
+        assembleIndicatorView(debug: false)
         
         
         assembleMapControls()
         
+        dropPinAtParkedCar()
+        demoAvailbleSpots()
+        
         pullUpView = PullUpView()
-        print(pullUpView.frame)
         view.addSubview(pullUpView)
         
         assembleSearchBar()
@@ -196,7 +203,7 @@ class MainViewController: UIViewController {
     func assembleAppInfoCard() -> ControlCardView {
         let card = ControlCardView(title: "ParkOur App")
         
-        let whereabouts = "3.7km away. Near Moffett Blvd."
+        let whereabouts = "3.1km away. Near Moffett Blvd."
         let myCarName = "Honda Civic"
         
         let contentView = AppInfoCardContentView(parkedCarWhereabouts: whereabouts, carName: myCarName)
@@ -205,6 +212,31 @@ class MainViewController: UIViewController {
         return card
     }
     
+    func getParkedCarCoordinate() {
+        // TODO: Get from UserDefaults
+        parkedCarCoordinate = CLLocationCoordinate2D(latitude: 37.4032874, longitude: -122.0761399)
+    }
+    
+    func assignTapGestureToMapView() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(printTappedCoordinate(sender:)))
+        mapView.addGestureRecognizer(tap)
+    }
+    
+    @objc func printTappedCoordinate(sender: UITapGestureRecognizer) {
+        let tappedLoc = sender.location(in: self.mapView)
+        let coordinate = self.mapView.convert(tappedLoc, toCoordinateFrom: self.mapView)
+        print(coordinate)
+    }
+    
+    func demoAvailbleSpots() {
+        let availablePath1 = AvailablePath(beginning: CLLocationCoordinate2D(latitude: 37.41054437205348, longitude: -122.0602686687085), end: CLLocationCoordinate2D(latitude: 37.41061964920736, longitude: -122.06002592877037))
+        drawLine(path: availablePath1)
+        let availablePath2 = AvailablePath(beginning: CLLocationCoordinate2D(latitude: 37.41075668913328, longitude: -122.05957625982572), end: CLLocationCoordinate2D(latitude: 37.410830900834696, longitude: -122.0593433546685))
+        drawLine(path: availablePath2)
+        let availablePath3 = AvailablePath(beginning: CLLocationCoordinate2D(latitude: 37.410858263081124, longitude: -122.05926284025611), end: CLLocationCoordinate2D(latitude: 37.410909394523145, longitude: -122.05909877844263))
+        drawLine(path: availablePath3)
+        
+    }
 }
 
 extension MainViewController: AssistKitManagerDelegate {
@@ -282,16 +314,31 @@ extension MainViewController: MKMapViewDelegate {
         }
     }
     
+    
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if overlay is MKPolyline {
             let lineRenderer = MKPolylineRenderer(overlay: overlay)
             lineRenderer.strokeColor = UIColor(hexString: "#73D671")
-            lineRenderer.lineWidth = 4
+            lineRenderer.lineWidth = 8
             
             return lineRenderer
         }
         
         return MKOverlayRenderer()
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        // If it's parked car
+        if annotation.coordinate == parkedCarCoordinate {
+            let annotationView = MKAnnotationView()
+            annotationView.annotation = annotation
+            annotationView.image = UIImage.resizedImage(image: UIImage(named: "parkedCarIcon")!, scaledToSize: CGSize(width: 45, height: 45))
+            annotationView.canShowCallout = true
+
+            return annotationView
+        } else {
+            return nil
+        }
     }
     
 }
@@ -323,7 +370,6 @@ extension MainViewController: CLLocationManagerDelegate {
             if !didStart {
                 didStart = true
                 locateToLocation(location: location)
-                
             }
             
         }
@@ -373,6 +419,16 @@ extension MainViewController {
         if CLLocationManager.authorizationStatus() != .authorizedAlways || CLLocationManager.authorizationStatus() != .authorizedWhenInUse {
             locationManager.requestAlwaysAuthorization()
         }
+    }
+    
+    func dropPinAtParkedCar() {
+        // Demo code
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = parkedCarCoordinate
+        annotation.title = "Parked Car"
+        
+        mapView.addAnnotation(annotation)
     }
     
     func dropPinAtCurrentPlace(code: Int) {
@@ -428,7 +484,9 @@ extension MainViewController {
     }
     
     @objc func findParkedCar() {
-        
+        let parkedCarLoc = CLLocation(latitude: parkedCarCoordinate.latitude, longitude: parkedCarCoordinate.longitude)
+        pullUpView.swipe(up: false)
+        locateToLocation(location: parkedCarLoc)
     }
 }
 
@@ -445,7 +503,14 @@ extension MainViewController: UISearchBarDelegate {
             }
             print(response.mapItems)
             self.pullUpView.moveDown()
+            
             self.mapView.setRegion(response.boundingRegion, animated: true)
+            var placeMarks: [MKPlacemark] = []
+            response.mapItems.forEach { (mapItem) in
+                placeMarks.append(mapItem.placemark)
+            }
+            
+            self.mapView.addAnnotations(placeMarks)
         }
     }
     
@@ -459,5 +524,16 @@ extension MainViewController: UISearchBarDelegate {
         }
         mapKitSearchRequest(text: str)
         searchBar.searchTextField.resignFirstResponder()
+    }
+}
+
+
+extension CLLocationCoordinate2D {
+    static func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        if lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude {
+            return true
+        }
+        
+        return false
     }
 }

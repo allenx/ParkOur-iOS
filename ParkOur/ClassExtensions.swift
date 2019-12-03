@@ -1,9 +1,9 @@
 //
 //  ClassExtensions.swift
-//  WePeiYang
+//  ParkOur
 //
-//  Created by Allen X on 3/11/17.
-//  Copyright © 2017 twtstudio. All rights reserved.
+//  Created by Yixin Bao on 3/11/17.
+//  Copyright © 2017 Yixin Bao. All rights reserved.
 //
 
 /**

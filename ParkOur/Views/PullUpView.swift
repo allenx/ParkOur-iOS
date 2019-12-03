@@ -14,10 +14,14 @@ class PullUpView: UIView {
     
     var panBeginLocation: CGPoint!
     
+    private let topLimit: CGFloat = 126
+    private let bottomLimit: CGFloat = 482
+    
+    
     init() {
         super.init(frame: CGRect.zero)
         self.x = 0
-        self.y = 126
+        self.y = bottomLimit
         self.layer.cornerRadius = 40
         self.width = UIScreen.main.bounds.width
         self.height = 900
@@ -79,8 +83,8 @@ class PullUpView: UIView {
         if previewY <= 90 {
             previewY = 90
         }
-        if previewY >= 482 {
-            previewY = 482
+        if previewY >= bottomLimit {
+            previewY = bottomLimit
         }
         if panGesture.state == .ended {
             if previewY >= 304 {
@@ -119,13 +123,13 @@ class PullUpView: UIView {
     
     open func moveUp() {
         UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-            self.y = 126
+            self.y = self.topLimit
         }, completion: nil)
     }
     
     open func moveDown() {
         UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-            self.y = 482
+            self.y = self.bottomLimit
         }, completion: nil)
     }
 }

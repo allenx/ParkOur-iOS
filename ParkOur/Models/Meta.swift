@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 struct Meta {
     static let pairedAssistKitKey = "com.parkour.assistkit_identifier"
     
@@ -30,3 +31,5 @@ extension Notification.Name {
     
     static let findParkedCar = Notification.Name("findParkedCar")
 }
+
+
