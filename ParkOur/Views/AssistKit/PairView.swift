@@ -82,25 +82,29 @@ class PairView: UIView {
     
     func didDiscoverAssistKit() {
         
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-            self.scanningLabel.alpha = 0
-            self.findingIndicator.stopRevolving()
-            self.findingIndicator.startThrobbing()
-        }) { (_) in
-            self.scanningLabel.removeFromSuperview()
-            
-            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.findingIndicator.y = 20
-                self.foundLabel.alpha = 1
-                self.foundLabel.y = 20+self.findingIndicator.height
-                self.connectButton.alpha = 1
-                self.connectButton.y = self.foundLabel.y+self.foundLabel.height+50
-                
+        Timer.scheduledTimer(withTimeInterval: 3.6, repeats: false) { (_) in
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.scanningLabel.alpha = 0
+                self.findingIndicator.stopRevolving()
+                self.findingIndicator.startThrobbing()
             }) { (_) in
+                self.scanningLabel.removeFromSuperview()
+                
+                UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 20, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                    self.findingIndicator.y = 20
+                    self.foundLabel.alpha = 1
+                    self.foundLabel.y = 20+self.findingIndicator.height
+                    self.connectButton.alpha = 1
+                    self.connectButton.y = self.foundLabel.y+self.foundLabel.height+50
+                    
+                }) { (_) in
+                    
+                }
                 
             }
-            
         }
+        
+        
         
         
     }

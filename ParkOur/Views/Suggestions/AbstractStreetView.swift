@@ -19,7 +19,7 @@ class AbstractStreetView: UIView {
     private let spaceBetweenSpots: CGFloat = 5
     
     var spots: [Bool] = []
-    
+    var spotViews: [UIView] = []
     
     
     init(spots: [Bool]) {
@@ -27,7 +27,7 @@ class AbstractStreetView: UIView {
         x = 0
         y = 0
         width = UIScreen.main.bounds.width - 90
-        height = spotHeight
+        height = spotHeight + 4
         
         self.spots = spots
         self.spots = [false, true, false, false, true, true, false]
@@ -38,7 +38,7 @@ class AbstractStreetView: UIView {
             spotView.width = spotWidth
             spotView.height = spotHeight
             spotView.x = idx * (spotWidth + spaceBetweenSpots)
-            spotView.y = 0
+            spotView.y = 4
             spotView.layer.cornerRadius = 2
             idx += 1
             if available {
@@ -46,15 +46,43 @@ class AbstractStreetView: UIView {
             } else {
                 spotView.layer.backgroundColor = occupiedColor.cgColor
             }
-            
+            spotViews.append(spotView)
             addSubview(spotView)
         }
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(animateAgain))
+        isUserInteractionEnabled = true
+        addGestureRecognizer(tap)
     }
     
     func refresh(refreshedSpots: [Bool]) {
         spots = refreshedSpots
         
         
+    }
+    
+    func animate() {
+        let bounce = CASpringAnimation(keyPath: "transform.translation.y")
+        bounce.damping = 20
+        bounce.initialVelocity = 3
+        bounce.fromValue = 0
+        bounce.toValue = -4
+        bounce.duration = 0.85
+        bounce.repeatCount = HUGE
+        spotViews[1].layer.add(bounce, forKey: "bouncing")
+    }
+    
+    @objc func animateAgain() {
+        let bounce = CASpringAnimation(keyPath: "transform.translation.y")
+        bounce.damping = 20
+        bounce.initialVelocity = 3
+        bounce.fromValue = 0
+        bounce.toValue = -4
+        bounce.duration = 0.85
+        bounce.repeatCount = HUGE
+        
+        spotViews[1].layer.removeAnimation(forKey: "bouncing")
+        spotViews[2].layer.add(bounce, forKey: "bouncing")
     }
     
     required init?(coder: NSCoder) {

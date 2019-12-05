@@ -192,7 +192,7 @@ class MainViewController: UIViewController {
         
         
 //        let whereabouts = mostRecentPlacemark.name
-        let whereabouts = "777 Middlefield Rd."
+        let whereabouts = "S Akron Rd."
         
         let contentView = SuggestionCardContentView(whereabouts: whereabouts ?? "Nil", spots: fooSpots)
         card.addContentView(cardContentView: contentView)
@@ -382,11 +382,12 @@ extension MainViewController {
         let locationFillImage = UIImage(systemSymbol: .locationFill)
         
         let locateButton = UIButton()
+        
         locateButton.addTarget(self, action: #selector(locateToUserLocation), for: .touchUpInside)
         locateButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         locateButton.imageEdgeInsets = .init(top: -4, left: -4, bottom: -4, right: -4)
         locateButton.backgroundColor = .white
-        locateButton.layer.cornerRadius = 8
+        locateButton.layer.cornerRadius = 20
         locateButton.layer.shadowColor = UIColor.gray.cgColor
         locateButton.layer.shadowOpacity = 0.5
         locateButton.layer.shadowOffset = .zero

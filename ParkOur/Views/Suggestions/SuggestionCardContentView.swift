@@ -20,7 +20,7 @@ class SuggestionCardContentView: CardContentView {
         
         abstractStreetView = AbstractStreetView(spots: spots)
         addSubview(abstractStreetView)
-        
+        abstractStreetView.animate()
         let sum = spots.reduce(0) { (x, y) -> Int in
             if y {
                 return x
@@ -29,7 +29,7 @@ class SuggestionCardContentView: CardContentView {
             }
         }
         
-        suggestionLabel = UILabel(text: "\(sum) potential empty spots for your car", color: UIColor(hexString: "#464646"))
+        suggestionLabel = UILabel(text: "\(sum-1) potential empty spots for your car", color: UIColor(hexString: "#464646"))
         suggestionLabel.font = .systemFont(ofSize: 14, weight: .semibold)
         suggestionLabel.x = 0
         suggestionLabel.y = abstractStreetView.y + abstractStreetView.height + 10
